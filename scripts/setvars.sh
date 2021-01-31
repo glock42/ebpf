@@ -34,5 +34,5 @@ export TEST_TMPDIR=/mnt/pmemdir
 export RESULTS=$OFFLOADBASE/RESULTS/$MACHINE
 
 #Commands
-mkdir $OUTPUTDIR
+#mkdir $OUTPUTDIR
 mkdir $KERNEL

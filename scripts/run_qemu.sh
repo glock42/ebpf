@@ -7,7 +7,7 @@ sleep 1
 
 #$APPBENCH/scripts/killqemu.sh
 
-#sudo qemu-system-x86_64 -kernel $KERNEL/vmlinuz-$VER -hda $QEMU_IMG_FILE -append "root=/dev/sda rw" --curses -m $QEMUMEM -smp cores=16 -cpu host -enable-kvm -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 -net nic -nographic -serial mon:stdio
+#sudo qemu-system-x86_64 -kernel $KERNEL/vmlinuz-$VER -hda $QEMU_IMG_FILE -append "root=/dev/sda rw" --curses -m $QEMUMEM -smp cores=16 -cpu host -enable-kvm -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 #-net nic -nographic -serial mon:stdio
 sudo qemu-system-x86_64 -kernel $KERNEL/vmlinuz-$VER -hda $QEMU_IMG_FILE -append "root=/dev/sda rw console=tty0 console=ttyS0,9600n8" -m $QEMUMEM -smp cores=16 -cpu host -enable-kvm -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 -net nic -nographic -serial mon:stdio
 exit
 

@@ -7,7 +7,7 @@ sudo cp mlfs.config .config
 sudo make -j$PARA
 #sudo make modules
 
- y="4.8.12"
+ y="5.6.9"
    if [[ x$ == x ]];
   then
       echo You have to say a version!
