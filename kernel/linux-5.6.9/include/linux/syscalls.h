@@ -1228,6 +1228,8 @@ asmlinkage long sys_ni_syscall(void);
 #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
 
 
+//asmlinkage long sys_hello(void);
+
 /*
  * Kernel code should not call syscalls (i.e., sys_xyzyyz()) directly.
  * Instead, use one of the functions which work equivalently, such as
@@ -1421,5 +1423,7 @@ long ksys_old_shmctl(int shmid, int cmd, struct shmid_ds __user *buf);
 long compat_ksys_semtimedop(int semid, struct sembuf __user *tsems,
 			    unsigned int nsops,
 			    const struct old_timespec32 __user *timeout);
+
+asmlinkage long sys_hello(char* buf, int off, int count);
 
 #endif
