@@ -336,7 +336,7 @@ BPF_CALL_2(bpf_fusionfs_crc32, const char *, data, size_t, size)
     return crc32(0, data, size);
 }
 
-static const struct bpf_func_proto bpf_fusionfs_crc32_proto = {
+const struct bpf_func_proto bpf_fusionfs_crc32_proto = {
     .func           = bpf_fusionfs_crc32,
     .gpl_only       = true,
     .ret_type       = RET_INTEGER,
