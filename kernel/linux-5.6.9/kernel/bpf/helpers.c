@@ -12,6 +12,7 @@
 #include <linux/filter.h>
 #include <linux/ctype.h>
 #include <linux/jiffies.h>
+#include <linux/crc32.h>
 
 #include "../../lib/kstrtox.h"
 
@@ -324,6 +325,59 @@ const struct bpf_func_proto bpf_jiffies64_proto = {
 	.ret_type	= RET_INTEGER,
 };
 
+BPF_CALL_2(bpf_fusionfs_crc32, const char *, data, size_t, size) 
+{
+
+    int ret = -EINVAL;
+    if (data == NULL) {
+        return ret;
+    }
+
+    return crc32(0, data, size);
+}
+
+static const struct bpf_func_proto bpf_fusionfs_crc32_proto = {
+    .func           = bpf_fusionfs_crc32,
+    .gpl_only       = true,
+    .ret_type       = RET_INTEGER,
+    .arg1_type      = ARG_ANYTHING, 
+    .arg2_type      = ARG_CONST_SIZE,
+
+};
+
+static const struct bpf_func_proto *
+bpf_fusionfs_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog) {
+
+    switch (func_id) {
+        case BPF_FUNC_fusionfs_crc32:
+            return &bpf_fusionfs_crc32_proto;
+        default:
+            return NULL;
+    }
+}
+
+static bool bpf_fusionfs_is_valid_access(int off, int size,
+        enum bpf_access_type type,
+        const struct bpf_prog *prog,
+        struct bpf_insn_access_aux *info) {
+    if (off < 0)
+        return false;
+    if (type != BPF_READ)
+        return false;
+    return true;
+
+}
+
+const struct bpf_verifier_ops fusionfs_verifier_ops = {
+    .get_func_proto = bpf_fusionfs_func_proto,
+    .is_valid_access = bpf_fusionfs_is_valid_access,
+
+};
+
+const struct bpf_prog_ops fusionfs_prog_ops = {
+    .test_run = NULL,
+
+};
 #ifdef CONFIG_CGROUPS
 BPF_CALL_0(bpf_get_current_cgroup_id)
 {
@@ -498,4 +552,5 @@ const struct bpf_func_proto bpf_strtoul_proto = {
 	.arg3_type	= ARG_ANYTHING,
 	.arg4_type	= ARG_PTR_TO_LONG,
 };
+
 #endif
