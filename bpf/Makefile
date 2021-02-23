@@ -2,9 +2,10 @@ CLANG = clang
 
 EXECABLE = monitor-exec
 
-#BPFCODE = bpf_program
-BPFCODE = crc32c 
+BPFCODE = bpf_program
+#BPFCODE = crc32c 
 KERN_SRC = /root/ebpf/kernel/linux-5.6.9
+#KERN_SRC = /root/ebpf/kernel/linux-5.10.14
 
 BPFTOOLS = $(KERN_SRC)/samples/bpf
 BPFLOADER = $(BPFTOOLS)/bpf_load.c
@@ -17,6 +18,7 @@ LOADINCLUDE += -I$(KERN_SRC)/tools/lib
 LOADINCLUDE += -I$(KERN_SRC)/tools/perf
 LOADINCLUDE += -I$(KERN_SRC)/tools/include
 LOADINCLUDE += -I$(PWD)/include
+LOADINCLUDE += -I$(KERN_SRC)/tools/testing/selftests/bpf
 
 #LIBRARY_PATH = -L/usr/local/lib64
 LIBRARY_PATH = -L$(KERN_SRC)/tools/lib/bpf
