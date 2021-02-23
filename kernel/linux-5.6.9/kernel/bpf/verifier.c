@@ -9538,7 +9538,7 @@ patch_call_imm:
 		 */
 		if (!fn->func) {
 			verbose(env,
-				"kernel subsystem misconfigured func %s#%d\n",
+				"kernel subsystem misconfigured func %s#%d, ops->get_func_proto\n",
 				func_id_name(insn->imm), insn->imm);
 			return -EFAULT;
 		}

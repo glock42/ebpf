@@ -340,7 +340,7 @@ const struct bpf_func_proto bpf_fusionfs_crc32_proto = {
     .func           = bpf_fusionfs_crc32,
     .gpl_only       = true,
     .ret_type       = RET_INTEGER,
-    .arg1_type      = ARG_ANYTHING, 
+    .arg1_type      = ARG_PTR_TO_MEM, 
     .arg2_type      = ARG_CONST_SIZE,
 
 };
