@@ -1,9 +1,12 @@
-#define CREATE_TRACE_POINTS
+//#define CREATE_TRACE_POINTS
 #include "test_tp.h"
 #include <linux/syscalls.h>
 #include <linux/kernel.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
+#include <linux/bpf.h>
+#include <linux/filter.h>
+#include <linux/crc32.h>
 static const uint32_t table0_[256] = {
   0x00000000, 0xf26b8303, 0xe13b70f7, 0x1350f3f4,
   0xc79a971f, 0x35f1141c, 0x26a1e7e8, 0xd4ca64eb,
@@ -78,8 +81,57 @@ SYSCALL_DEFINE3(hello, char*, buf, int, off, int, count)  {
         printk(KERN_ALERT "DEBUG: Copy Failed\n");
         return -1;
     }
-    trace_myprot_port(kbuf, off, count, table0_);
+//    trace_myprot_port(kbuf, off, count, table0_);
     printk("hello world, off: %d, count: %d \n", off, count);
     kfree(kbuf);
     return 0; 
 }
+
+BPF_CALL_2(bpf_fusionfs_crc32, const char *, data, size_t, size) 
+{
+
+    int ret = -EINVAL;
+    if (data == NULL) {
+        return ret;
+    }
+
+    return crc32(0, data, size);
+}
+
+const struct bpf_func_proto bpf_fusionfs_crc32_proto = {
+    .func           = bpf_fusionfs_crc32,
+    .gpl_only       = true,
+    .ret_type       = RET_INTEGER,
+    .arg1_type      = ARG_PTR_TO_MEM, 
+    .arg2_type      = ARG_CONST_SIZE,
+
+};
+
+static const struct bpf_func_proto *
+bpf_fusionfs_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog) {
+
+    switch (func_id) {
+        case BPF_FUNC_fusionfs_crc32:
+            return &bpf_fusionfs_crc32_proto;
+        default:
+            return NULL;
+    }
+}
+
+static bool bpf_fusionfs_is_valid_access(int off, int size,
+        enum bpf_access_type type,
+        const struct bpf_prog *prog,
+        struct bpf_insn_access_aux *info) {
+    if (off < 0)
+        return false;
+    if (type != BPF_READ)
+        return false;
+    return true;
+
+}
+
+const struct bpf_verifier_ops fusionfs_verifier_ops = {
+    .get_func_proto = bpf_fusionfs_func_proto,
+    .is_valid_access = bpf_fusionfs_is_valid_access,
+
+};

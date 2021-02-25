@@ -120,6 +120,8 @@ static int load_and_attach(const char *event, struct bpf_insn *prog, int size)
 		prog_type = BPF_PROG_TYPE_SK_SKB;
 	} else if (is_sk_msg) {
 		prog_type = BPF_PROG_TYPE_SK_MSG;
+	} else if (is_fusionfs) {
+		prog_type = BPF_PROG_TYPE_FUSIONFS;
 	} else {
 		printf("Unknown event '%s'\n", event);
 		return -1;

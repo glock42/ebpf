@@ -5909,8 +5909,6 @@ bpf_base_func_proto(enum bpf_func_id func_id)
 		return &bpf_tail_call_proto;
 	case BPF_FUNC_ktime_get_ns:
 		return &bpf_ktime_get_ns_proto;
-	case BPF_FUNC_fusionfs_crc32:
-		return &bpf_fusionfs_crc32_proto;
 	default:
 		break;
 	}
